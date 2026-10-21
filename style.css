@@ -1,0 +1,547 @@
+/* ==========================================================================
+   ORDIZIAKO KIROLDEGIKO ERRESERBAK - ESTILO SINPLEA ETA GARBIA
+   ========================================================================== */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f4f6f8;
+    color: #333333;
+    line-height: 1.4;
+    padding: 20px;
+}
+
+.app-container {
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+/* GOIBURUA */
+.app-header {
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 7px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.header-logo {
+    height: 80px;
+    width: 80px;
+    min-width: 80px;
+    max-width: 80px;
+    object-fit: contain;
+    border-radius: 6px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    flex-shrink: 0;
+}
+
+.header-brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.header-brand h1 {
+    font-size: 1.4rem;
+    color: #1a365d;
+    margin-bottom: 2px;
+}
+
+.subtitle {
+    font-size: 0.85rem;
+    color: #666666;
+}
+
+/* API EGOERA */
+.api-status-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    font-size: 0.85rem;
+}
+
+.status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #999999;
+}
+
+.status-indicator.online .status-dot {
+    background-color: #28a745;
+}
+
+.status-indicator.offline .status-dot {
+    background-color: #dc3545;
+}
+
+.api-endpoint-box {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.api-endpoint-box input {
+    padding: 4px 8px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    width: 170px;
+}
+
+/* PESTAINAK / TABS */
+.nav-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 18px;
+    border-bottom: 2px solid #dddddd;
+    padding-bottom: 2px;
+}
+
+.tab-btn {
+    padding: 9px 18px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: #555555;
+    transition: all 0.2s;
+}
+
+.tab-btn:hover {
+    color: #0066cc;
+    background-color: #eef4fc;
+    border-radius: 4px 4px 0 0;
+}
+
+.tab-btn.active {
+    color: #0066cc;
+    border-bottom-color: #0066cc;
+}
+
+.tab-pane {
+    display: none;
+}
+
+.tab-pane.active {
+    display: block;
+}
+
+/* MEZUAK / ALERTAK */
+.alert-container {
+    margin-bottom: 15px;
+}
+
+.alert {
+    padding: 10px 14px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    font-size: 0.85rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #c8e6c9;
+}
+
+.alert-warning {
+    background-color: #fff8e1;
+    color: #f57f17;
+    border: 1px solid #ffe082;
+}
+
+.alert-danger {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+}
+
+.alert-close {
+    background: transparent;
+    border: none;
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: inherit;
+    font-weight: bold;
+    line-height: 1;
+}
+
+/* LAYOUT GRID */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 340px 1fr;
+    gap: 20px;
+    align-items: start;
+}
+
+@media (max-width: 850px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* PANELAK / TXARTELAK */
+.card {
+    background-color: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    border-bottom: 1px solid #eeeeee;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.card-header h2 {
+    font-size: 1.1rem;
+    color: #222222;
+}
+
+.card-sub {
+    font-size: 0.8rem;
+    color: #777777;
+    display: block;
+    margin-top: 2px;
+}
+
+/* FORMULARIOA */
+.form-group {
+    margin-bottom: 12px;
+}
+
+.form-row {
+    display: flex;
+    gap: 10px;
+}
+
+.form-group.col {
+    flex: 1;
+}
+
+label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: #444444;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    background-color: #ffffff;
+    color: #333333;
+}
+
+input:focus,
+select:focus {
+    border-color: #0066cc;
+    outline: none;
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal;
+    cursor: pointer;
+    font-size: 0.85rem;
+    margin-top: 6px;
+}
+
+.theory-note {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-left: 3px solid #0066cc;
+    font-size: 0.8rem;
+    color: #555555;
+}
+
+.theory-note code {
+    background: #eef2f6;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    color: #004499;
+}
+
+/* BOTOIAK */
+.btn {
+    display: inline-block;
+    padding: 7px 14px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: #0066cc;
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #0052a3;
+}
+
+.btn-secondary {
+    background-color: #e9ecef;
+    color: #333333;
+    border-color: #ced4da;
+}
+
+.btn-secondary:hover {
+    background-color: #dde2e6;
+}
+
+.btn-danger-outline {
+    background-color: #ffffff;
+    color: #cc0000;
+    border-color: #cc0000;
+}
+
+.btn-danger-outline:hover {
+    background-color: #ffebee;
+}
+
+.btn-block {
+    width: 100%;
+}
+
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+}
+
+/* TAULAKO BOTOIAK */
+.action-group {
+    display: flex;
+    justify-content: flex-end;
+    gap: 5px;
+    flex-wrap: wrap;
+}
+
+.btn-soft {
+    background-color: #fff3e0;
+    color: #e65100;
+    border: 1px solid #ffb74d;
+}
+
+.btn-soft:hover {
+    background-color: #ffe0b2;
+}
+
+.btn-hard {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+.btn-hard:hover {
+    background-color: #ffcdd2;
+}
+
+.btn-restore {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.btn-restore:hover {
+    background-color: #c8e6c9;
+}
+
+.btn-recharge {
+    background-color: #e3f2fd;
+    color: #0d47a1;
+    border: 1px solid #90caf9;
+}
+
+.btn-recharge:hover {
+    background-color: #bbdefb;
+}
+
+/* KONTROLAK */
+.table-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    color: #555555;
+}
+
+/* TAULA */
+.table-responsive {
+    overflow-x: auto;
+    margin-top: 10px;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.data-table th,
+.data-table td {
+    border: 1px solid #dddddd;
+    padding: 8px 10px;
+    vertical-align: middle;
+}
+
+.data-table th {
+    background-color: #f8f9fa;
+    color: #495057;
+    font-weight: bold;
+    text-align: left;
+}
+
+.data-table tr:nth-child(even) {
+    background-color: #fdfdfd;
+}
+
+.data-table tr:hover {
+    background-color: #f1f5f9;
+}
+
+.data-table tr.row-soft-deleted {
+    background-color: #fafafa;
+    color: #888888;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* BADGES (TXAPAK) */
+.badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.badge-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.badge-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.badge-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.sport-tag {
+    font-size: 0.75rem;
+    color: #777777;
+    margin-left: 4px;
+}
+
+/* LEGENDA */
+.delete-legend {
+    margin-top: 15px;
+    padding-top: 12px;
+    border-top: 1px solid #eeeeee;
+    font-size: 0.8rem;
+    color: #666666;
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 992px) {
+    .app-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .api-status-bar {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+}
