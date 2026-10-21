@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="eu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordiziako Kiroldegia Web APP - Erreserbak, Pistak eta Bonoak</title>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+    <div class="app-container">
+        <!-- GOIBURUA -->
+        <header class="app-header">
+            <div class="header-brand" style="display: flex; align-items: center; gap: 12px;">
+                <img src="majori-kiroldegia.jpg" alt="Majori Kiroldegia" class="header-logo">
+                <div class="header-brand-text">
+                    <h1>Ordiziako Kiroldegia - WEB APP</h1>
+                    <p class="subtitle">Kudeaketa sistema: Transakzioak, Pistak (Soft/Hard Delete) eta Bonoak</p>
+                </div>
+            </div>
+
+            <!-- API KONFIGURAZIOA & STATUS -->
+            <div class="api-status-bar">
+                <div class="status-indicator" id="apiStatusBadge">
+                    <span class="status-dot"></span>
+                    <span id="apiStatusText">APIra konektatzen...</span>
+                </div>
+                <div class="api-endpoint-box">
+                    <label for="apiUrlInput">API:</label>
+                    <input type="text" id="apiUrlInput" value="http://localhost:5089">
+                    <button id="btnCheckApi" class="btn btn-secondary btn-sm">Egiaztatu</button>
+                    <button id="btnPort5089" class="btn btn-secondary btn-sm" title="API Helbidea (5089)">5089</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- PESTAINAK / TABS -->
+        <nav class="nav-tabs">
+            <button class="tab-btn active" data-tab="tab-erreserbak">Erreserbak</button>
+            <button class="tab-btn" data-tab="tab-pistak">Pisten Kudeaketa</button>
+            <button class="tab-btn" data-tab="tab-bonoak">Bonoen Kudeaketa</button>
+            <button class="tab-btn" data-tab="tab-bazkideak">Bazkideen Kudeaketa</button>
+        </nav>
+
+        <!-- MEZU PANELAK (ALERTS) -->
+        <div id="alertContainer" class="alert-container"></div>
+
+        <!-- 1. PESTAINA: ERRESERBAK -->
+        <section id="tab-erreserbak" class="tab-pane active">
+            <div class="dashboard-grid">
+                <!-- EZKERREKO PANELA: ERRESERBA FORMULARIOA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Erreserba Berria Egin</h2>
+                            <span class="card-sub">Transakzioa, Pista egiaztapena eta Bonoak</span>
+                        </div>
+                    </div>
+
+                    <form id="erreserbaForm">
+                        <div class="form-group">
+                            <label for="selectBazkidea">Bazkidea:</label>
+                            <select id="selectBazkidea" required>
+                                <option value="">Kargatzen...</option>
+                            </select>
+                            <small id="bazkideBonoInfo" style="color: #0066cc; font-size: 0.75rem; display: block; margin-top: 3px;"></small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectPista">Pista:</label>
+                            <select id="selectPista" required>
+                                <option value="">Kargatzen...</option>
+                            </select>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group col">
+                                <label for="inputData">Data:</label>
+                                <input type="date" id="inputData" required value="2026-10-25">
+                            </div>
+
+                            <div class="form-group col">
+                                <label for="selectOrdua">Ordua:</label>
+                                <select id="selectOrdua" required>
+                                    <option value="17:00:00">17:00:00</option>
+                                    <option value="18:00:00" selected>18:00:00</option>
+                                    <option value="19:00:00">19:00:00</option>
+                                    <option value="20:00:00">20:00:00</option>
+                                    <option value="21:00:00">21:00:00</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group" style="background-color: #f0f7ff; padding: 8px 10px; border-radius: 4px; border: 1px solid #d0e3ff;">
+                            <label class="checkbox-label" for="checkErabiliBonoa">
+                                <input type="checkbox" id="checkErabiliBonoa">
+                                <span><strong>Erabili bazkidearen bonoa</strong> (saio 1 deskontatu)</span>
+                            </label>
+                        </div>
+
+                        <div class="form-group" style="background-color: #fff9e6; padding: 8px 10px; border-radius: 4px; border: 1px solid #ffe082; margin-top: 6px;">
+                            <label class="checkbox-label" for="checkSimulatuBlokeoa">
+                                <input type="checkbox" id="checkSimulatuBlokeoa">
+                                <span><strong>Simulatu blokeoa (5s)</strong> (Konkurrentzia probatzeko geldialdia)</span>
+                            </label>
+                        </div>
+
+                        <div class="form-actions" style="margin-top: 15px;">
+                            <button type="submit" id="btnErreserbatu" class="btn btn-primary btn-block">
+                                Erreserba Gorde
+                            </button>
+                        </div>
+
+                        <div class="theory-note">
+                            <strong>Teoria:</strong>
+                            <code>SELECT ... FOR UPDATE</code> bidez pista aktibo dagoela, bonoak saio nahikoa duela eta hutsunea libre dagoela bermatzen da transakzio atomiko batean.
+                        </div>
+                    </form>
+                </div>
+
+                <!-- ESKUINEKO PANELA: ERRESERBEN ZERRENDA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Erreserben Zerrenda</h2>
+                            <span class="card-sub" id="erreserbaKopuruText">Kargatzen...</span>
+                        </div>
+                        <div class="table-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="checkEzabatuak" checked>
+                                <span>Soft-Delete ikusi</span>
+                            </label>
+                            <button id="btnRefresh" class="btn btn-secondary btn-sm" title="Eguneratu">Eguneratu</button>
+                            <button id="btnGarbitu" class="btn btn-danger-outline btn-sm" title="Taula osoa garbitu">Garbitu</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Pista</th>
+                                    <th>Bazkidea</th>
+                                    <th>Data & Ordua</th>
+                                    <th>Egoera</th>
+                                    <th class="text-right">Ekintzak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="erreserbakTbody">
+                                <tr>
+                                    <td colspan="6" class="text-center">Erreserbak kargatzen...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="delete-legend">
+                        <div class="legend-item">
+                            <span class="badge badge-warning">Soft Delete</span>
+                            <span>Logikoa: datu-basean geratzen da (ezabatua=TRUE), baina pista libre geratzen da.</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="badge badge-danger">Hard Delete</span>
+                            <span>Fisikoa: errenkada behin betiko ezabatzen da taulatik.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. PESTAINA: PISTEN KUDEAKETA -->
+        <section id="tab-pistak" class="tab-pane">
+            <div class="dashboard-grid">
+                <!-- PISTA BERRIA SORTU FORM -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Pista Berria Sortu</h2>
+                            <span class="card-sub">Instalazio berria gehitu</span>
+                        </div>
+                    </div>
+
+                    <form id="pistaForm">
+                        <div class="form-group">
+                            <label for="inputPistaIzena">Pistaren Izena:</label>
+                            <input type="text" id="inputPistaIzena" placeholder="Adib. Padel 2" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputPistaKirola">Kirola:</label>
+                            <input type="text" id="inputPistaKirola" placeholder="Adib. Padela" required>
+                        </div>
+
+                        <button type="submit" id="btnSortuPista" class="btn btn-primary btn-block">Pista Sortu</button>
+                    </form>
+
+                    <div class="theory-note" style="margin-top: 20px;">
+                        <strong>Soft Delete:</strong>
+                        Pista bat <code>Soft Delete</code> egiten denean, <em>pistarekin erlazionatutako erreserba guztiak desgaitu bezala geratuko dira</em> transakzio atomiko batean!
+                    </div>
+                </div>
+
+                <!-- PISTEN TAULA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Kiroldegiko Pistak</h2>
+                            <span class="card-sub" id="pistaKopuruText">Kargatzen...</span>
+                        </div>
+                        <div class="table-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="checkPistakEzabatuak" checked>
+                                <span>Soft-Delete ikusi</span>
+                            </label>
+                            <button id="btnRefreshPistak" class="btn btn-secondary btn-sm">Eguneratu</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Izena</th>
+                                    <th>Kirola</th>
+                                    <th>Egoera</th>
+                                    <th class="text-right">Ekintzak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pistakTbody">
+                                <tr>
+                                    <td colspan="5" class="text-center">Pistak kargatzen...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. PESTAINA: BONOEN KUDEAKETA -->
+        <section id="tab-bonoak" class="tab-pane">
+            <div class="dashboard-grid">
+                <!-- BONO BERRIA SORTU / KARGATU -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Bono Berria Sortu</h2>
+                            <span class="card-sub">Bazkide bati bonoa sortu</span>
+                        </div>
+                    </div>
+
+                    <form id="bonoForm">
+                        <div class="form-group">
+                            <label for="inputBonoEmaila">Emaila:</label>
+                            <input type="text" id="inputBonoEmaila" placeholder="adib. berria@goierri.eus" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputBonoSaioak">Hasierako bono-saioak:</label>
+                            <input type="number" id="inputBonoSaioak" min="0" value="5" required>
+                        </div>
+
+                        <button type="submit" id="btnSortuBonoa" class="btn btn-primary btn-block">Bonoa Gorde</button>
+                    </form>
+
+                    <div class="theory-note" style="margin-top: 20px;">
+                        <strong>Bonoen transakzioak:</strong>
+                        Bonoen karga eta deskontuak <code>SELECT saioak ... FOR UPDATE</code> bidez blokeatzen dira saldoa negatiboan ez geratzeko bi konexio batera sartzen badira.
+                    </div>
+                </div>
+
+                <!-- BONOEN TAULA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Bonoen Zerrenda</h2>
+                            <span class="card-sub" id="bonoKopuruText">Kargatzen...</span>
+                        </div>
+                        <button id="btnRefreshBonoak" class="btn btn-secondary btn-sm">Eguneratu</button>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Emaila</th>
+                                    <th>Saio kopurua</th>
+                                    <th>Egoera</th>
+                                    <th class="text-right">Kargatu Saioak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bonoakTbody">
+                                <tr>
+                                    <td colspan="4" class="text-center">Bonoak kargatzen...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. PESTAINA: BAZKIDEEN KUDEAKETA -->
+        <section id="tab-bazkideak" class="tab-pane">
+            <div class="dashboard-grid">
+                <!-- BAZKIDE BERRIA SORTU -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Bazkide Berria Sortu</h2>
+                            <span class="card-sub">Bazkide berria erregistratu</span>
+                        </div>
+                    </div>
+
+                    <form id="bazkideForm">
+                        <div class="form-group">
+                            <label for="inputBazkideIzena">Izena:</label>
+                            <input type="text" id="inputBazkideIzena" placeholder="Adib. Mikel" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputBazkideAbizena">Abizena:</label>
+                            <input type="text" id="inputBazkideAbizena" placeholder="Adib. Mendizabal" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputBazkideEmaila">Emaila:</label>
+                            <input type="email" id="inputBazkideEmaila" placeholder="Adib. mikel@goierri.eus" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="inputBazkideHasierakoBonoa">Hasierako bono saioak (aukerakoa):</label>
+                            <input type="number" id="inputBazkideHasierakoBonoa" min="0" value="0" placeholder="0">
+                        </div>
+
+                        <button type="submit" id="btnSortuBazkidea" class="btn btn-primary btn-block">Bazkidea Gorde</button>
+                    </form>
+
+                    <div class="theory-note" style="margin-top: 20px;">
+                        <strong>Bazkideen kudeaketa:</strong>
+                        Bazkideak erreserbak egiteko eta bonoen titularrak izateko erabiltzen dira. Emailak bakarra izan behar du sisteman (<code>UNIQUE KEY</code>).
+                    </div>
+                </div>
+
+                <!-- BAZKIDEEN TAULA -->
+                <div class="card">
+                    <div class="card-header">
+                        <div>
+                            <h2>Bazkideen Zerrenda</h2>
+                            <span class="card-sub" id="bazkideKopuruText">Kargatzen...</span>
+                        </div>
+                        <div class="table-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="checkBazkideakEzabatuak" checked>
+                                <span>Soft-Delete ikusi</span>
+                            </label>
+                            <button id="btnRefreshBazkideak" class="btn btn-secondary btn-sm">Eguneratu</button>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Izena & Abizena</th>
+                                    <th>Emaila</th>
+                                    <th>Bono Saldoa</th>
+                                    <th>Egoera</th>
+                                    <th class="text-right">Ekintzak</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bazkideakTbody">
+                                <tr>
+                                    <td colspan="6" class="text-center">Bazkideak kargatzen...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- Moduluak banatuta -->
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/pistak.js"></script>
+    <script src="js/bonoak.js"></script>
+    <script src="js/bazkideak.js"></script>
+    <script src="js/erreserbak.js"></script>
+
+    <!-- Hasieratzailea eta gertaerak -->
+    <script src="js/app.js"></script>
+</body>
+
+</html>
