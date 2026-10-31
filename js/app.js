@@ -55,6 +55,7 @@ $(function() {
 
     // 7. Bonoen gertaerak
     $("#btnRefreshBonoak").on("click", kargatuBonoak);
+    $("#checkBonoakEzabatuak").on("change", kargatuBonoak);
     $("#bonoForm").on("submit", sortuBonoa);
 
     // 8. Bazkideen gertaerak

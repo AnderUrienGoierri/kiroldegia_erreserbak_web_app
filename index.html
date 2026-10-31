@@ -278,7 +278,13 @@
                             <h2>Bonoen Zerrenda</h2>
                             <span class="card-sub" id="bonoKopuruText">Kargatzen...</span>
                         </div>
-                        <button id="btnRefreshBonoak" class="btn btn-secondary btn-sm">Eguneratu</button>
+                        <div class="table-controls">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="checkBonoakEzabatuak" checked>
+                                <span>Soft-Delete ikusi</span>
+                            </label>
+                            <button id="btnRefreshBonoak" class="btn btn-secondary btn-sm">Eguneratu</button>
+                        </div>
                     </div>
 
                     <div class="table-responsive">
@@ -288,15 +294,27 @@
                                     <th>Emaila</th>
                                     <th>Saio kopurua</th>
                                     <th>Egoera</th>
-                                    <th class="text-right">Kargatu Saioak</th>
+                                    <th>Kargatu Saioak</th>
+                                    <th class="text-right">Ekintzak</th>
                                 </tr>
                             </thead>
                             <tbody id="bonoakTbody">
                                 <tr>
-                                    <td colspan="4" class="text-center">Bonoak kargatzen...</td>
+                                    <td colspan="5" class="text-center">Bonoak kargatzen...</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    <div class="delete-legend">
+                        <div class="legend-item">
+                            <span class="badge badge-warning">Soft Delete</span>
+                            <span>Logikoa: bonoa desgaitu egiten da (ezabatua=TRUE), saioak blokeatuz.</span>
+                        </div>
+                        <div class="legend-item">
+                            <span class="badge badge-danger">Hard Delete</span>
+                            <span>Fisikoa: bonoa behin betiko ezabatzen da datu-basetik.</span>
+                        </div>
                     </div>
                 </div>
             </div>
